@@ -1,0 +1,62 @@
+#ifndef clox_value_h
+#define clox_value_h
+
+#include "common.h"
+
+typedef struct Obj Obj;
+typedef struct ObjString ObjString;
+
+typedef enum {
+  VAL_BOOL,
+  VAL_NIL,
+  VAL_NUMBER,
+  VAL_OBJ,
+  //ch 20 q1
+  VAL_EMPTY, 
+} ValueType;
+
+typedef struct {
+  ValueType type;
+  union {
+    bool boolean;
+    double number;
+    Obj* obj;
+  } as;
+} Value;
+
+
+//ch 20 q1
+#define BOOL_VAL(value)   ((Value){VAL_BOOL, {.boolean = value}})
+#define NIL_VAL           ((Value){VAL_NIL, {.number = 0}})
+#define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
+#define OBJ_VAL(object)   ((Value){VAL_OBJ, {.obj = (Obj*)object}})
+#define EMPTY_VAL         ((Value){VAL_EMPTY, {.number = 0}})  
+
+#define AS_BOOL(value)    ((value).as.boolean)
+#define AS_NUMBER(value)  ((value).as.number)
+#define AS_OBJ(value)     ((value).as.obj)
+
+//ch 20 q1
+#define IS_BOOL(value)    ((value).type == VAL_BOOL)
+#define IS_NIL(value)     ((value).type == VAL_NIL)
+#define IS_NUMBER(value)  ((value).type == VAL_NUMBER)
+#define IS_OBJ(value)     ((value).type == VAL_OBJ)
+#define IS_EMPTY(value)   ((value).type == VAL_EMPTY)       
+
+
+typedef struct {
+  int capacity;
+  int count;
+  Value* values;
+} ValueArray;
+
+//ch 20 q1
+void initValueArray(ValueArray* array);
+void writeValueArray(ValueArray* array, Value value);
+void freeValueArray(ValueArray* array);
+void printValue(Value value);
+bool valuesEqual(Value a, Value b);
+uint32_t hashValue(Value value);                               
+
+
+#endif
